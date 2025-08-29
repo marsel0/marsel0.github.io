@@ -1,44 +1,25 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Документация</title>
-<style>
-body { display: flex; font-family: sans-serif; margin: 0; }
-#toc {
-  width: 250px;
-  padding: 1rem;
-  border-right: 1px solid #ccc;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
-}
-#content {
-  flex: 1;
-  padding: 1rem;
-}
-pre { padding: 1rem; border-radius: 5px; overflow-x: auto; position: relative; margin-bottom: 1rem; }
-pre code.json { background-color: #f0f8ff; color: #00008b; }
-pre code.bash { background-color: #f5f5f5; color: #333; }
-pre code.curl { background-color: #fdf6e3; color: #657b83; }
-button.copy-btn {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  padding: 2px 6px;
-  font-size: 0.8rem;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Документация</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Оглавление</h2>
+            <ul id="file-list" class="file-list"></ul>
+        </aside>
+        
+        <main class="content">
+            <div id="markdown-content" class="markdown-body"></div>
+        </main>
+    </div>
 
-<div id="toc"></div>
-<div id="content">Загрузка...</div>
-
-<script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
-<script src="js/files.js"></script>
-<script src="js/markdown.js"></script>
+    <script src="js/files.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
-
