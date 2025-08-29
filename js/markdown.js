@@ -4,12 +4,7 @@ const domain = params.get('domain') || 'default.com';
 
 // Список Markdown-файлов (в порядке сортировки)
 const files = [
-  'docs/1_name.md',
-  'docs/11_name.md',
-  'docs/2_name.md',
-  'docs/21_name.md',
-  'docs/22_name.md',
-  'docs/221_name.md'
+  'docs/1_name.md'
 ];
 
 // Функция загрузки и рендеринга MD
