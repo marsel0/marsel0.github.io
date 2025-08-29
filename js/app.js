@@ -58,12 +58,52 @@ class MarkdownViewer {
         }
     }
 
+    detectLanguage(language) {
+        const languageMap = {
+            'bash': 'bash',
+            'sh': 'bash',
+            'shell': 'bash',
+            'curl': 'bash',
+            'json': 'json',
+            'js': 'javascript',
+            'javascript': 'javascript',
+            'html': 'html',
+            'xml': 'xml',
+            'css': 'css',
+            'python': 'python',
+            'py': 'python',
+            'php': 'php',
+            'ruby': 'ruby',
+            'rb': 'ruby',
+            'java': 'java',
+            'c': 'c',
+            'cpp': 'cpp',
+            'c++': 'cpp',
+            'c#': 'csharp',
+            'cs': 'csharp',
+            'go': 'go',
+            'rust': 'rust',
+            'rs': 'rust',
+            'sql': 'sql',
+            'yaml': 'yaml',
+            'yml': 'yaml',
+            'markdown': 'markdown',
+            'md': 'markdown'
+        };
+
+        if (!language) return 'plaintext';
+        
+        const lang = language.toLowerCase().trim();
+        return languageMap[lang] || 'plaintext';
+    }
+
     renderMarkdown(markdownText) {
         // Настраиваем marked с подсветкой кода
         marked.setOptions({
-            highlight: function(code, lang) {
-                if (lang && hljs.getLanguage(lang)) {
-                    return hljs.highlight(code, { language: lang }).value;
+            highlight: (code, language) => {
+                const detectedLang = this.detectLanguage(language);
+                if (hljs.getLanguage(detectedLang)) {
+                    return hljs.highlight(code, { language: detectedLang }).value;
                 }
                 return hljs.highlightAuto(code).value;
             },
@@ -75,14 +115,16 @@ class MarkdownViewer {
         const renderer = new marked.Renderer();
         const originalCodeRenderer = renderer.code;
         
-        renderer.code = function(code, language, isEscaped) {
-            const validLanguage = language && hljs.getLanguage(language) ? language : 'plaintext';
-            const highlighted = originalCodeRenderer.call(this, code, validLanguage, isEscaped);
+        renderer.code = (code, language, isEscaped) => {
+            const detectedLang = this.detectLanguage(language);
+            const highlighted = originalCodeRenderer.call(this, code, detectedLang, isEscaped);
+            
+            const displayLanguage = detectedLang === 'plaintext' ? 'text' : detectedLang;
             
             return `
                 <div class="code-block">
                     <div class="code-header">
-                        <span class="code-language">${validLanguage}</span>
+                        <span class="code-language">${displayLanguage}</span>
                         <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
                     </div>
                     ${highlighted}

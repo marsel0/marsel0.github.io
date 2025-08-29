@@ -1,264 +1,84 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* Добавляем в конец файла */
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background: #fff;
-}
-
-.container {
-    display: flex;
-    min-height: 100vh;
-}
-
-.sidebar {
-    width: 300px;
-    background: #f8f9fa;
-    border-right: 1px solid #dee2e6;
-    padding: 20px;
-    overflow-y: auto;
-    position: fixed;
-    height: 100vh;
-}
-
-.sidebar h2 {
-    margin-bottom: 20px;
-    color: #333;
-    font-size: 1.5rem;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #007bff;
-}
-
-.toc {
-    margin-top: 20px;
-}
-
-.toc ul {
-    list-style: none;
-    padding-left: 0;
-}
-
-.toc li {
-    margin-bottom: 8px;
-}
-
-.toc a {
-    display: block;
-    padding: 6px 12px;
-    text-decoration: none;
-    color: #495057;
-    border-radius: 4px;
-    transition: all 0.2s;
-    font-size: 0.9rem;
-}
-
-.toc a:hover {
-    background-color: #e9ecef;
-    color: #007bff;
-    transform: translateX(5px);
-}
-
-.toc .h2 {
+/* Специфические стили для разных языков */
+.code-language {
+    text-transform: uppercase;
     font-weight: 600;
-    margin-left: 0;
+    font-size: 0.8em;
 }
 
-.toc .h3 {
-    font-weight: 500;
-    margin-left: 15px;
-    font-size: 0.85rem;
+/* Цвета для разных языков */
+.code-language[data-language="bash"],
+.code-language[data-language="shell"],
+.code-language[data-language="curl"] {
+    color: #89e051;
 }
 
-.toc .h4 {
-    font-weight: 400;
-    margin-left: 30px;
-    font-size: 0.8rem;
+.code-language[data-language="json"] {
+    color: #f7df1e;
+}
+
+.code-language[data-language="javascript"],
+.code-language[data-language="js"] {
+    color: #f0db4f;
+}
+
+.code-language[data-language="html"] {
+    color: #e34c26;
+}
+
+.code-language[data-language="python"],
+.code-language[data-language="py"] {
+    color: #3572A5;
+}
+
+.code-language[data-language="php"] {
+    color: #777BB4;
+}
+
+.code-language[data-language="java"] {
+    color: #ed8b00;
+}
+
+.code-language[data-language="text"],
+.code-language[data-language="plaintext"] {
     color: #6c757d;
 }
 
-.content {
-    flex: 1;
-    margin-left: 300px;
-    padding: 40px;
-    max-width: calc(100% - 300px);
-}
-
-.markdown-body {
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-/* Стили для Markdown */
-.markdown-body h1 {
-    font-size: 2.2em;
-    border-bottom: 3px solid #007bff;
-    padding-bottom: 0.3em;
-    margin: 1.5em 0 1em 0;
-    color: #2c3e50;
-}
-
-.markdown-body h2 {
-    font-size: 1.8em;
-    border-bottom: 2px solid #e9ecef;
-    padding-bottom: 0.3em;
-    margin: 1.8em 0 1em 0;
-    color: #34495e;
-}
-
-.markdown-body h3 {
-    font-size: 1.4em;
-    margin: 1.5em 0 0.8em 0;
-    color: #2c3e50;
-}
-
-.markdown-body h4 {
-    font-size: 1.2em;
-    margin: 1.2em 0 0.6em 0;
-    color: #7f8c8d;
-}
-
-.markdown-body p {
-    margin-bottom: 1.2em;
-    line-height: 1.7;
-}
-
-.markdown-body code {
-    background: #f8f9fa;
-    padding: 0.2em 0.4em;
-    border-radius: 3px;
-    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-    font-size: 0.9em;
-    color: #e83e8c;
-}
-
-/* Контейнер для кода с кнопкой копирования */
-.code-block {
-    position: relative;
-    margin: 1.5em 0;
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.code-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #343a40;
-    color: white;
-    padding: 8px 12px;
-    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-    font-size: 0.85em;
-}
-
-.code-language {
-    font-weight: 500;
-}
-
-.copy-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 0.8em;
-    transition: background 0.2s;
-}
-
-.copy-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.copy-btn.copied {
-    background: #28a745;
-}
-
-pre code.hljs {
-    padding: 1.5em !important;
-    border-radius: 0 0 6px 6px;
-    font-size: 0.9em;
-    line-height: 1.5;
-}
-
-.markdown-body blockquote {
-    background: #f8f9fa;
+/* Стили для подсветки синтаксиса */
+.hljs {
+    background: #f8f9fa !important;
     border-left: 4px solid #007bff;
-    padding: 1em 1.5em;
-    margin: 1.5em 0;
-    border-radius: 0 4px 4px 0;
 }
 
-.markdown-body table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1.5em 0;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+.hljs-keyword {
+    color: #d73a49;
 }
 
-.markdown-body table th {
-    background: #f8f9fa;
-    font-weight: 600;
-    text-align: left;
+.hljs-string {
+    color: #032f62;
 }
 
-.markdown-body table th,
-.markdown-body table td {
-    padding: 12px;
-    border: 1px solid #dee2e6;
+.hljs-number {
+    color: #005cc5;
 }
 
-.markdown-body ul,
-.markdown-body ol {
-    margin: 1.2em 0;
-    padding-left: 2em;
+.hljs-comment {
+    color: #6a737d;
 }
 
-.markdown-body li {
-    margin-bottom: 0.5em;
+.hljs-function {
+    color: #6f42c1;
 }
 
-/* Адаптивность */
-@media (max-width: 968px) {
-    .container {
-        flex-direction: column;
-    }
-    
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        border-right: none;
-        border-bottom: 1px solid #dee2e6;
-    }
-    
-    .content {
-        margin-left: 0;
-        max-width: 100%;
-        padding: 20px;
-    }
-    
-    .toc {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-    
-    .toc ul {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-    
-    .toc li {
-        margin-bottom: 0;
-    }
-    
-    .toc a {
-        white-space: nowrap;
-    }
+.hljs-params {
+    color: #e36209;
+}
+
+.hljs-built_in {
+    color: #6f42c1;
+}
+
+.hljs-attr {
+    color: #005cc5;
 }
