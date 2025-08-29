@@ -1,5 +1,7 @@
 Для получения актуального статуса ордера используйте метод Get order
+
 https://demo.tapbank.net/public/api/v1/shop/orders/{id}
+
 При ручном тестировании через postman можно периодически вызывать данный метод пока статус не меняется с requisites на customer_confirm (или cancelled в случае отмены) и ордера появился объект requisites как в примере ниже
 {
   "id": "763aab38-6fa9-4e95-bfed-a594b12314b6",

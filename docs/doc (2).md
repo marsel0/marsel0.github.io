@@ -30,7 +30,7 @@ PATCH /public/api/v1/shop/orders/{id}
 ---
 
 ### Пример запроса через curl
-```bash
+```curl
 curl -X PATCH "https://api.example.com/public/api/v1/shop/orders/006c1fca-a9d6-4e10-9564-2fe91262f729" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \

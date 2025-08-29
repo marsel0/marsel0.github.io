@@ -4,20 +4,41 @@
 <meta charset="UTF-8">
 <title>Документация</title>
 <style>
-body { font-family: sans-serif; padding: 2rem; max-width: 900px; margin: auto; }
-pre { background: #f0f0f0; padding: 1rem; overflow-x: auto; }
-code { background: #eee; padding: 2px 4px; border-radius: 3px; }
+body { display: flex; font-family: sans-serif; margin: 0; }
+#toc {
+  width: 250px;
+  padding: 1rem;
+  border-right: 1px solid #ccc;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+#content {
+  flex: 1;
+  padding: 1rem;
+}
+pre { padding: 1rem; border-radius: 5px; overflow-x: auto; position: relative; margin-bottom: 1rem; }
+pre code.json { background-color: #f0f8ff; color: #00008b; }
+pre code.bash { background-color: #f5f5f5; color: #333; }
+pre code.curl { background-color: #fdf6e3; color: #657b83; }
+button.copy-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 2px 6px;
+  font-size: 0.8rem;
+}
 </style>
 </head>
 <body>
 
-<h1>Документация</h1>
+<div id="toc"></div>
 <div id="content">Загрузка...</div>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="js/files.js"></script>
 <script src="js/markdown.js"></script>
-
 </body>
 </html>
 
