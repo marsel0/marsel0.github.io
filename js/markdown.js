@@ -2,12 +2,11 @@
 const params = new URLSearchParams(window.location.search);
 const domain = params.get('domain') || 'default.com';
 
-// Список Markdown-файлов (в порядке сортировки)
+// Список Markdown-файлов (относительно корня)
 const files = [
   'docs/1_name.md'
 ];
 
-// Функция загрузки и рендеринга MD
 async function loadDocs() {
   const container = document.getElementById('content');
   container.innerHTML = '';
@@ -15,13 +14,17 @@ async function loadDocs() {
   for (const file of files) {
     try {
       const res = await fetch(file);
+      if (!res.ok) {
+        console.error('Ошибка загрузки', file, res.status);
+        continue;
+      }
       let md = await res.text();
       
       // Заменяем %host% на домен из параметра
       md = md.replace(/%host%/g, domain);
       
       // Рендерим Markdown в HTML
-      const html = marked(md);
+      const html = marked.parse(md);  // <- исправлено
       
       // Добавляем на страницу
       const div = document.createElement('div');
