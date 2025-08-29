@@ -10,7 +10,7 @@ def generate_files_js():
         if file.endswith('.md'):
             files.append(f"docs/{file}")
     
-    # Сортируем файлы для удобства
+    # Сортируем файлы для последовательного отображения
     files.sort()
     
     # Генерируем содержимое файла
@@ -21,6 +21,7 @@ def generate_files_js():
         f.write(content)
     
     print(f"Сгенерирован файл js/files.js с {len(files)} файлами")
+    print("Файлы в порядке:", [f.split('/')[-1] for f in files])
 
 if __name__ == "__main__":
     generate_files_js()
