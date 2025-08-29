@@ -1,8 +1,0 @@
-site_name: Документация для site1
-theme:
-  name: material
-nav:
-  - Главная: index.md
-  - API: api.md
-extra:
-  host: site1.com
