@@ -9,9 +9,12 @@
 
 /* Цвета для разных языков */
 .code-language[data-language="bash"],
-.code-language[data-language="shell"],
-.code-language[data-language="curl"] {
+.code-language[data-language="shell"] {
     color: #89e051;
+}
+
+.code-language[data-language="curl"] {
+    color: #ff6b35; /* Оранжевый цвет для curl */
 }
 
 .code-language[data-language="json"] {
@@ -81,4 +84,13 @@
 
 .hljs-attr {
     color: #005cc5;
+}
+
+/* Специальные стили для curl команд */
+.hljs .hljs-built_in {
+    color: #89e051; /* Цвет для curl, -X, -H, -d */
+}
+
+.hljs .hljs-attr {
+    color: #005cc5; /* Цвет для заголовков типа Authorization, Content-Type */
 }

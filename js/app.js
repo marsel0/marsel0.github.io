@@ -63,7 +63,7 @@ class MarkdownViewer {
             'bash': 'bash',
             'sh': 'bash',
             'shell': 'bash',
-            'curl': 'bash',
+            'curl': 'bash', // Обрабатываем curl как bash
             'json': 'json',
             'js': 'javascript',
             'javascript': 'javascript',
@@ -97,6 +97,16 @@ class MarkdownViewer {
         return languageMap[lang] || 'plaintext';
     }
 
+    getDisplayLanguage(language) {
+        const displayMap = {
+            'bash': 'bash',
+            'plaintext': 'text',
+            'curl': 'curl' // Показываем curl как curl, но подсвечиваем как bash
+        };
+        
+        return displayMap[language] || language;
+    }
+
     renderMarkdown(markdownText) {
         // Настраиваем marked с подсветкой кода
         marked.setOptions({
@@ -117,14 +127,14 @@ class MarkdownViewer {
         
         renderer.code = (code, language, isEscaped) => {
             const detectedLang = this.detectLanguage(language);
-            const highlighted = originalCodeRenderer.call(this, code, detectedLang, isEscaped);
+            const displayLang = this.getDisplayLanguage(language || detectedLang);
             
-            const displayLanguage = detectedLang === 'plaintext' ? 'text' : detectedLang;
+            const highlighted = originalCodeRenderer.call(this, code, detectedLang, isEscaped);
             
             return `
                 <div class="code-block">
                     <div class="code-header">
-                        <span class="code-language">${displayLanguage}</span>
+                        <span class="code-language" data-language="${displayLang}">${displayLang}</span>
                         <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
                     </div>
                     ${highlighted}
