@@ -1,0 +1,8 @@
+site_name: Документация для site2
+theme:
+  name: material
+nav:
+  - Главная: index.md
+  - API: api.md
+extra:
+  host: site2.ru
