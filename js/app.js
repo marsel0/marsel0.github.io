@@ -27,7 +27,6 @@ class MarkdownViewer {
 
             let allContent = '';
             
-            // Загружаем все файлы последовательно
             for (const filePath of files) {
                 try {
                     const response = await fetch(filePath);
@@ -58,7 +57,7 @@ class MarkdownViewer {
         }
     }
 
-    detectLanguage(language) {
+    normalizeLanguage(language) {
         const languageMap = {
             'bash': 'bash',
             'sh': 'bash',
@@ -98,60 +97,105 @@ class MarkdownViewer {
     }
 
     getDisplayLanguage(language) {
-        const displayMap = {
-            'bash': 'bash',
-            'plaintext': 'text',
-            'curl': 'curl' // Показываем curl как curl, но подсвечиваем как bash
-        };
+        if (!language) return 'text';
         
-        return displayMap[language] || language;
+        const lang = language.toLowerCase().trim();
+        return lang === 'plaintext' ? 'text' : lang;
     }
 
     renderMarkdown(markdownText) {
-        // Настраиваем marked с подсветкой кода
+        // Сначала обрабатываем код блоки самостоятельно
+        const processedMarkdown = this.preprocessCodeBlocks(markdownText);
+        
+        // Настраиваем marked БЕЗ подсветки кода
         marked.setOptions({
             highlight: (code, language) => {
-                const detectedLang = this.detectLanguage(language);
-                if (hljs.getLanguage(detectedLang)) {
-                    return hljs.highlight(code, { language: detectedLang }).value;
-                }
-                return hljs.highlightAuto(code).value;
+                // Не используем встроенную подсветку marked
+                return code;
             },
             breaks: true,
             gfm: true
         });
 
-        // Кастомный рендерер для code blocks
-        const renderer = new marked.Renderer();
-        const originalCodeRenderer = renderer.code;
-        
-        renderer.code = (code, language, isEscaped) => {
-            const detectedLang = this.detectLanguage(language);
-            const displayLang = this.getDisplayLanguage(language || detectedLang);
-            
-            const highlighted = originalCodeRenderer.call(this, code, detectedLang, isEscaped);
-            
-            return `
-                <div class="code-block">
-                    <div class="code-header">
-                        <span class="code-language" data-language="${displayLang}">${displayLang}</span>
-                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
-                    </div>
-                    ${highlighted}
-                </div>
-            `;
-        };
-
-        const html = marked.parse(markdownText, { renderer });
+        const html = marked.parse(processedMarkdown);
         document.getElementById('markdown-content').innerHTML = html;
         
-        // Применяем подсветку ко всем блокам кода
-        document.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightElement(block);
-        });
-
+        // Теперь вручную применяем подсветку ко всем блокам кода
+        this.highlightAllCodeBlocks();
+        
         // Добавляем якоря для заголовков
         this.addAnchorsToHeadings();
+    }
+
+    preprocessCodeBlocks(markdownText) {
+        // Регулярное выражение для нахождения блоков кода
+        const codeBlockRegex = /```(\w*)\n([\s\S]*?)```/g;
+        
+        return markdownText.replace(codeBlockRegex, (match, language, code) => {
+            const normalizedLang = this.normalizeLanguage(language);
+            const displayLang = this.getDisplayLanguage(language || normalizedLang);
+            
+            return `\n\n<div class="custom-code-block" data-language="${normalizedLang}" data-display="${displayLang}">\n${code.trim()}\n</div>\n\n`;
+        });
+    }
+
+    highlightAllCodeBlocks() {
+        const codeBlocks = document.querySelectorAll('.custom-code-block');
+        
+        codeBlocks.forEach(block => {
+            const code = block.textContent;
+            const language = block.getAttribute('data-language');
+            const displayLanguage = block.getAttribute('data-display');
+            
+            let highlightedCode = code;
+            
+            if (language && language !== 'plaintext' && hljs.getLanguage(language)) {
+                try {
+                    highlightedCode = hljs.highlight(code, { language }).value;
+                } catch (e) {
+                    console.warn(`Ошибка подсветки для языка ${language}:`, e);
+                    highlightedCode = hljs.highlightAuto(code).value;
+                }
+            } else {
+                highlightedCode = hljs.highlightAuto(code).value;
+            }
+            
+            const codeContainer = document.createElement('div');
+            codeContainer.className = 'code-block';
+            codeContainer.innerHTML = `
+                <div class="code-header">
+                    <span class="code-language" data-language="${displayLanguage}">${displayLanguage}</span>
+                    <button class="copy-btn">Копировать</button>
+                </div>
+                <pre><code class="hljs language-${language}">${highlightedCode}</code></pre>
+            `;
+            
+            // Заменяем исходный блок на оформленный
+            block.parentNode.replaceChild(codeContainer, block);
+            
+            // Добавляем обработчик кнопки копирования
+            const copyBtn = codeContainer.querySelector('.copy-btn');
+            copyBtn.addEventListener('click', () => this.copyToClipboard(copyBtn));
+        });
+    }
+
+    copyToClipboard(button) {
+        const codeBlock = button.closest('.code-block').querySelector('code');
+        const text = codeBlock.textContent;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = button.textContent;
+            button.textContent = 'Скопировано!';
+            button.classList.add('copied');
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('copied');
+            }, 2000);
+        }).catch(err => {
+            console.error('Ошибка копирования:', err);
+            button.textContent = 'Ошибка';
+        });
     }
 
     addAnchorsToHeadings() {
@@ -216,7 +260,6 @@ class MarkdownViewer {
     }
 
     setupEventListeners() {
-        // Плавная прокрутка при клике на ссылки оглавления
         document.getElementById('toc').addEventListener('click', (e) => {
             if (e.target.tagName === 'A') {
                 e.preventDefault();
@@ -232,12 +275,10 @@ class MarkdownViewer {
             }
         });
 
-        // Обработка изменения хэша в URL
         window.addEventListener('hashchange', () => {
             this.scrollToAnchor();
         });
 
-        // Прокрутка к якорю при загрузке страницы
         setTimeout(() => this.scrollToAnchor(), 100);
     }
 
@@ -250,26 +291,6 @@ class MarkdownViewer {
             }
         }
     }
-}
-
-// Глобальная функция для копирования кода
-function copyToClipboard(button) {
-    const codeBlock = button.closest('.code-block').querySelector('pre code');
-    const text = codeBlock.textContent;
-    
-    navigator.clipboard.writeText(text).then(() => {
-        const originalText = button.textContent;
-        button.textContent = 'Скопировано!';
-        button.classList.add('copied');
-        
-        setTimeout(() => {
-            button.textContent = originalText;
-            button.classList.remove('copied');
-        }, 2000);
-    }).catch(err => {
-        console.error('Ошибка копирования:', err);
-        button.textContent = 'Ошибка';
-    });
 }
 
 // Инициализация при загрузке страницы
