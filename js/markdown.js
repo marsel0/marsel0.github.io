@@ -2,7 +2,6 @@
 const params = new URLSearchParams(window.location.search);
 const domain = params.get('domain') || 'default.com';
 
-// loadDocs использует массив files из files.js
 async function loadDocs() {
   const container = document.getElementById('content');
   const tocContainer = document.getElementById('toc');
@@ -10,10 +9,9 @@ async function loadDocs() {
   tocContainer.innerHTML = '';
 
   const toc = [];
+  const slugger = new marked.Slugger();  // v4 работает
 
-  // slugger для уникальных id
-  const slugger = new marked.Slugger();
-
+  // Используем массив files из files.js
   for (const file of files) {
     try {
       const res = await fetch(file);
@@ -22,16 +20,15 @@ async function loadDocs() {
       let md = await res.text();
       md = md.replace(/%host%/g, domain);
 
-      // Новый renderer
-      const renderer = {
-        heading(text, level) {
-          const id = slugger.slug(text);
-          toc.push({ level, text, id });
-          return `<h${level} id="${id}">${text}</h${level}>`;
-        }
+      // Настройка renderer
+      const renderer = new marked.Renderer();
+      renderer.heading = function(text, level) {
+        const id = slugger.slug(text);
+        toc.push({ level, text, id });
+        return `<h${level} id="${id}">${text}</h${level}>`;
       };
 
-      const html = marked.parse(md, { renderer });
+      const html = marked(md, { renderer });
       const div = document.createElement('div');
       div.innerHTML = html;
       container.appendChild(div);
