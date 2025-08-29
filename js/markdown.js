@@ -28,7 +28,7 @@ async function loadDocs() {
         return `<h${level} id="${id}">${text}</h${level}>`;
       };
 
-      const html = marked(md, { renderer });
+      const html = marked.marked(md, { renderer });
       const div = document.createElement('div');
       div.innerHTML = html;
       container.appendChild(div);
