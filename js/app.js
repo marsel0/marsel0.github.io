@@ -76,7 +76,7 @@ class MarkdownViewer {
         const originalCodeRenderer = renderer.code;
         
         renderer.code = function(code, language, isEscaped) {
-            const validLanguage = language && hljs.getLanguage(language) ? language : 'plaintext';
+            const validLanguage = language && hljs.getLanguage(language) ? language : 'code';
             const highlighted = originalCodeRenderer.call(this, code, validLanguage, isEscaped);
             
             return `
