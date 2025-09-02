@@ -13,7 +13,7 @@
   const resolvedDomain = domain || window.location.host;
 
   // Для гарантии уникальности якорей (если одинаковые заголовки в разных файлах)
-  const slugger = new marked.Slugger();
+  const slugger = new marked.marked.Slugger();
   const makeId = (fileIndex, text) => {
     const base = slugger.slug(text);
     return `h1-${fileIndex}-${base}`;
